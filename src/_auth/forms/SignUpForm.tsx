@@ -1,6 +1,7 @@
 import { Button } from "../../components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -13,8 +14,12 @@ import {
 import { Input } from "../../components/ui/input";
 import { SignupValidation } from "../../lib/validation";
 import { z } from "zod";
+import Loader from "../../components/shared/Loader";
 
 const SignUpForm = () => {
+
+  const isLoading = false;
+
   // Define form
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
@@ -32,6 +37,7 @@ const SignUpForm = () => {
   }
 
   return (
+
     <div className="container">
       <Form {...form}>
         <div className="form-wrapper">
@@ -46,47 +52,70 @@ const SignUpForm = () => {
           >
             <FormField
               control={form.control}
-              name="username"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input type="text" className="shad-input" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input type="text" className="shad-input" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+              <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="you@example.com" {...field} />
+                    <Input type="email" className="shad-input" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
+              <FormField
               control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input type="password" className="shad-input" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="submit-button">Submit</Button>
+           
+            <Button type="submit" className="shad-button_primary">
+              {isLoading ? (
+                <div className="flex-center gap-2">
+                 <Loader /> Loading...
+                </div>
+              ): "Sign up"}
+            </Button>
+            
+            <p className="text-small-regular text-light-2 text-center -mt-2">
+              Already have and account?
+              <Link to="/sign-in" className="text-primary-300 text-small-semibold ml-1">Sign in</Link>
+            </p>
+
           </form>
         </div>
       </Form>
