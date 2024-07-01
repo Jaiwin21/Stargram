@@ -1,8 +1,6 @@
-import { Button } from "../../components/ui/button" 
-import * as z from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-
+import { Button } from "../../components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -11,60 +9,89 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from  "../../components/ui/form";
-import { Input } from "../../components/ui/input" 
-
- 
-const formSchema = z.object({
-  username: z.string().min(2).max(50),
-})
-
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
+import { SignupValidation } from "../../lib/validation";
+import { z } from "zod";
 
 const SignUpForm = () => {
+  // Define form
+  const form = useForm<z.infer<typeof SignupValidation>>({
+    resolver: zodResolver(SignupValidation),
+    defaultValues: {
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+    },
+  });
 
-
-// 1. Define your form.
-const form = useForm<z.infer<typeof formSchema>>({
-  resolver: zodResolver(formSchema),
-  defaultValues: {
-    username: "",
-  },
-})
-
-// 2. Define a submit handler.
-function onSubmit(values: z.infer<typeof formSchema>) {
-  // Do something with the form values.
-  // ✅ This will be type-safe and validated.
-  console.log(values)
-}
-
+  // Submit handler
+  function onSubmit(values: z.infer<typeof SignupValidation>) {
+    console.log(values);
+  }
 
   return (
-    <div>
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="shadcn" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+    <div className="container">
+      <Form {...form}>
+        <div className="form-wrapper">
+          <img src="/assets/images/star-logo.png" alt="logo" className="logo" />
+          <h2 className="title">Create New Account</h2>
+          <p className="subtitle">
+            To use Stargram enter your details
+          </p>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="form-content"
+          >
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="shadcn" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    This is your public display name.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="you@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="submit-button">Submit</Button>
+          </form>
+        </div>
+      </Form>
     </div>
-  )
-}
+  );
+};
 
-
-export default SignUpForm
+export default SignUpForm;
