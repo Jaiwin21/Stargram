@@ -103,6 +103,7 @@ const SignUpForm = () => {
               )}
             />
            
+            {/* Button with loading feature */}
             <Button type="submit" className="shad-button_primary">
               {isLoading ? (
                 <div className="flex-center gap-2">
