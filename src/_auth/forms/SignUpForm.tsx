@@ -37,7 +37,7 @@ const SignUpForm = () => {
   }
 
   return (
-
+    // Sign-up form
     <div className="container">
       <Form {...form}>
         <div className="form-wrapper">
@@ -50,6 +50,7 @@ const SignUpForm = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="form-content"
           >
+            {/* Name field */}
             <FormField
               control={form.control}
               name="name"
@@ -63,6 +64,7 @@ const SignUpForm = () => {
                 </FormItem>
               )}
             />
+            {/* Username field */}
             <FormField
               control={form.control}
               name="username"
@@ -76,6 +78,7 @@ const SignUpForm = () => {
                 </FormItem>
               )}
             />
+            {/* Email field */}
               <FormField
               control={form.control}
               name="email"
@@ -89,6 +92,7 @@ const SignUpForm = () => {
                 </FormItem>
               )}
             />
+            {/* Password field */}
               <FormField
               control={form.control}
               name="password"

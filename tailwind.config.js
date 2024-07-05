@@ -17,6 +17,7 @@ module.exports = {
       
       },
     },
+    // Colour abbrevs/refs
     extend: {
       colors: {
         'primary-300': '#800080',
