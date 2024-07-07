@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,9 +15,12 @@ import { SignupValidation } from "../../lib/validation";
 import { z } from "zod";
 import Loader from "../../components/shared/Loader";
 import { createUserAccount } from "../../lib/appwrite/api";
+import { useToast } from "../../components/ui/use-toast";
+
 
 const SignUpForm = () => {
 
+  const { toast } = useToast();
   const isLoading = false;
 
   // Define form
@@ -36,7 +38,14 @@ const SignUpForm = () => {
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
      const newUser = await createUserAccount(values);
     
-    console.log(newUser);
+    if (!newUser) {
+
+      return toast({
+        title: "Sign up failed. Please try again.",
+      })
+
+    
+    }
   }
 
   return (
