@@ -24,7 +24,7 @@ const SignUpForm = () => {
   const { toast } = useToast();
   const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
   const navigate = useNavigate();
-  const { mutateAsync: createUserAccount, isPending: isCreatingUser} = useCreateUserAccount();
+  const { mutateAsync: createUserAccount, isPending: isCreatingAccount} = useCreateUserAccount();
   const { mutateAsync: signInAccount, isPending: isSigningIn} = useSignInAccount();
 
   // Define form
@@ -140,7 +140,7 @@ const SignUpForm = () => {
            
             {/* Button with loading feature */}
             <Button type="submit" className="shad-button_primary">
-              {isCreatingUser ? (
+              {isCreatingAccount ? (
                 <div className="flex-center gap-2">
                  <Loader /> Loading...
                 </div>
