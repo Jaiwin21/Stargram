@@ -64,7 +64,7 @@ const SignUpForm = () => {
       if (isLoggedIn) {
         form.reset();
         
-        navigate("/");
+        navigate("/sign-in");
       } else {
         toast({ title: "Sign-up failed. Please try again.", })
         
@@ -73,18 +73,21 @@ const SignUpForm = () => {
 
   return (
     // Sign-up form
-    <div className="container">
-      <Form {...form}>
-        <div className="form-wrapper">
-          <img src="/assets/images/star-logo.png" alt="logo" className="logo" />
-          <h2 className="title">Create New Account</h2>
-          <p className="subtitle">
-            To use Stargram enter your details
-          </p>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="form-content"
-          >
+<div className="container">
+  <Form {...form}>
+    <div className="form-wrapper">
+      <div className="logo-wrapper">
+        <img src="/assets/images/star-logo.png" alt="logo" className="logo" />
+        <span className="app-name">Stargram</span>
+      </div>
+      <h2 className="title">Create New Account</h2>
+      <p className="subtitle">
+        To use Stargram enter your details
+      </p>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="form-content"
+      >
             {/* Name field */}
             <FormField
               control={form.control}

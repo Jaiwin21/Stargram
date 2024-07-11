@@ -358,3 +358,22 @@ input {
 label {
   color: #fff; /* White text */
 }
+
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center horizontally */
+  
+}
+
+.logo {
+  width: 100px; 
+  height: 100px;
+}
+
+.app-name {
+  font-size: 32px; 
+  font-weight: bold;
+  margin-right: 80px;
+ 
+}

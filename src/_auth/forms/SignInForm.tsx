@@ -43,7 +43,8 @@ const SignInForm = () => {
     })
 
     if (!session) {
-      return toast ({title: 'Sign in failed. Please try again.'})
+      return toast ({title: 'Test1.'})
+      // Sign in failed. Please try again
     }
     const isLoggedIn = await checkAuthUser();
 
@@ -52,7 +53,7 @@ const SignInForm = () => {
 
       navigate('/')
     } else {
-      return toast({title: 'Sign up failed. Please try again.'})
+      return toast({title: 'Test2.'})
     }
   }
 
@@ -61,7 +62,10 @@ const SignInForm = () => {
     <div className="container">
       <Form {...form}>
         <div className="form-wrapper">
+          <div className="logo-wrapper">
           <img src="/assets/images/star-logo.png" alt="logo" className="logo" />
+        <span className="app-name">Stargram</span>
+      </div>
           <h2 className="title">Log into your account</h2>
           <p className="subtitle">
             Welcome back! Please enter your details.
