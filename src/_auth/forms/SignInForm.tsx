@@ -34,6 +34,7 @@ const SignInForm = () => {
       password: "",
     },
   });
+  
 
   // Submit handler
   async function onSubmit(values: z.infer<typeof SigninValidation>) {
@@ -41,7 +42,7 @@ const SignInForm = () => {
       email: values.email,
       password: values.password,
     })
-
+    console.log('here')
     if (!session) {
       return toast ({title: 'Test1.'})
       // Sign in failed. Please try again
