@@ -60,6 +60,13 @@ export async function saveUserToDB (user: {
 
 export async function signInAccount(user: {email: string; password: string;}) {
     try {
+        const sessions = await account.listSessions();
+        if (sessions.sessions.length > 0) {
+        // Delete all existing sessions
+        for (const session of sessions.sessions) {
+            await account.deleteSession(session.$id);
+        }
+    }
         const session = await account.createEmailPasswordSession(user.email, user.password);
         return session;
     } catch (error) {
