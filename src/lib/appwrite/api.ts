@@ -58,21 +58,24 @@ export async function saveUserToDB (user: {
     }
 }
 
-export async function signInAccount(user: {email: string; password: string;}) {
+export async function signInAccount(user: { email: string; password: string }) {
     try {
-        const sessions = await account.listSessions();
-        if (sessions.sessions.length > 0) {
-        // Delete all existing sessions
-        for (const session of sessions.sessions) {
-            await account.deleteSession(session.$id);
-        }
-    }
-        const session = await account.createEmailPasswordSession(user.email, user.password);
-        return session;
+      // Ensure user is logged out
+      try {
+        await account.deleteSession('current');
+      } catch (logoutError) {
+        // If there's an error, it might be because no session exists; ignore it
+        console.error("Logout error (likely no active session):", logoutError);
+      }
+  
+      // Create a new session
+      const session = await account.createEmailPasswordSession(user.email, user.password);
+      return session;
     } catch (error) {
-
+      console.error("Sign in error:", error);
+      throw error;
     }
-}
+  }
 
 export async function getCurrentUser() {
     try {
