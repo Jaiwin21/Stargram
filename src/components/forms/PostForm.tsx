@@ -38,7 +38,7 @@ const PostForm = ({ post } : PostFormProps) => {
         caption: post ? post?.caption : "",
         file: [],
         location: post ? post?.location : "",
-        tags: post ? post.tags.join(',') : 'PostValidation'
+        tags: post ? post.tags.join(',') : ''
         },
     })
 
@@ -47,8 +47,9 @@ const PostForm = ({ post } : PostFormProps) => {
         const newPost = await createPost ({
             ...values,
             userId: user.id,
+            files: []
         })
-
+        //console.log(error);
         if (!newPost) {
             toast ({
                 title: 'Please try again'

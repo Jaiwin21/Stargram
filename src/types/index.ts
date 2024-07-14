@@ -13,13 +13,18 @@ export type INavLink = {
     file: File[];
   };
   
-  export type INewPost = {
-    userId: string;
+  export interface INewPost {
     caption: string;
-    file: File[];
-    location?: string;
-    tags?: string;
-  };
+    files: File[];
+    location: string;
+    tags: string;
+    userId: string;
+  }
+
+  export interface IUploadedFile {
+    imageId: string;
+    imageUrl: string;
+  }
   
   export type IUpdatePost = {
     postId: string;

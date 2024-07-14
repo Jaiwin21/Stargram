@@ -1,6 +1,7 @@
-import { INewUser } from "../../types";
+import { INewUser, IUploadedFile } from "../../types";
 import { ID, Query } from "appwrite";
-import { account, appwriteConfig, avatars, databases } from "./config";
+import { account, appwriteConfig, avatars, databases, storage } from "./config";
+import { INewPost } from "../../types";
 
 export async function createUserAccount (user: INewUser) {
     try {
@@ -103,3 +104,57 @@ export async function signOutAccount() {
         console.log(error);
     }
 }
+
+
+export const createPost = async (post: INewPost) => {
+    try {
+      // Upload files to storage and get imageUrl and imageId for each file
+      const uploadedFiles = await Promise.all(post.files.map(file => uploadFile(file)));
+  
+      // Map uploaded files to the format expected by your database
+      const filesData = uploadedFiles.map(file => ({
+        imageUrl: file.imageUrl,
+        imageId: file.imageId,
+      }));
+  
+      // Construct the new post object to be stored in the database
+      const newPost = {
+        caption: post.caption,
+        location: post.location,
+        tags: post.tags.split(','), // Convert tags string to array
+        // Add other attributes as needed by your collection schema
+      };
+  
+      // Create document in the database
+      const createdPost = await databases.createDocument(
+        '6689c1e9000b929ee942', // Replace with your database ID
+        '6689c24700108fe45a5c', // Replace with your collection ID
+        ID.unique(), // Unique ID, or provide your own
+        newPost // Pass the constructed new post object
+      );
+  
+      return createdPost; // Return the created post document
+    } catch (error) {
+      console.error('Failed to create post:', error);
+      throw new Error('Failed to create post'); // Throw an error if creation fails
+    }
+  };
+  
+
+  export async function uploadFile(file: File): Promise<IUploadedFile> {
+    try {
+      // Upload file to Appwrite storage
+      const response = await storage.createFile('6689c186003124c10cf3', ID.unique(), file);
+  
+      // Construct the imageUrl based on your Appwrite configuration
+      const imageUrl = storage.getFileView('6689c186003124c10cf3', response.$id).href;
+  
+      return {
+        imageId: response.$id,
+        imageUrl: imageUrl,
+      };
+    } catch (error) {
+      console.error('Failed to upload file:', error);
+      throw new Error('Failed to upload file');
+    }
+  }
