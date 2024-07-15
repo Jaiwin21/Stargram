@@ -124,7 +124,7 @@ export async function createPost(post: INewPost) {
             appwriteConfig.postCollectionId,
             ID.unique(),
             {
-                creator: post.creator,
+                creator: post.userId,
                 caption: post.caption,
                 imageUrl: fileUrl.href, // Ensure fileUrl is a string
                 imageId: uploadedFile.$id,
@@ -188,7 +188,17 @@ export async function deleteFile(fileId: string) {
 
 
 
+export async function getRecentPosts() {
+    const posts = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.postCollectionId,
+        [Query.orderDesc('$createdAt'), Query.limit(20)]
+    )
 
+    if(!posts) throw Error;
+
+    return posts
+}
 
 
 
