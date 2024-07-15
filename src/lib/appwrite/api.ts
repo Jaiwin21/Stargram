@@ -214,7 +214,7 @@ export async function likePost(postId: string, likesArray: string[]) {
         )
 
         if(!updatedPost) throw Error;
-
+        return updatedPost;
     } catch (error) {
         console.log(error);
     }
@@ -236,7 +236,7 @@ export async function savePost(postId: string, userId: string) {
         )
 
         if(!updatedPost) throw Error;
-        
+        return updatedPost;
     } catch (error) {
         console.log(error);
     }
