@@ -1,6 +1,7 @@
 import { Models } from "appwrite"
 import { Link } from "react-router-dom";
 import { formatDateString } from "../../lib/utils";
+import { useUserContext } from "../../context/AuthContext";
 
 
 type PostCardProps = {
@@ -9,6 +10,12 @@ type PostCardProps = {
 
 
 const PostCard = ({ post }: PostCardProps) => {
+   
+    const { user } = useUserContext();
+
+    if(!post.creator) return;
+
+   
     // Ensure that creator is not null or undefined
     if (!post.creator) {
         return null; // or render a placeholder/error message
@@ -44,6 +51,14 @@ const PostCard = ({ post }: PostCardProps) => {
             </div>
             </div>
           </div>
+
+            <Link to={`/update-post/${post.$id}`}
+            // Hides the edit button from posts that are not yours
+            className={`${user.id !== post.creator.$id} && hidden`}
+            >
+            <img src="/assets/icons/edit.svg" alt="edit" width={20} height={20} />
+            </Link>
+
         </div>
       </div>
     );
