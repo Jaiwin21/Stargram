@@ -54,7 +54,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
             <Link to={`/update-post/${post.$id}`}
             // Hides the edit button from posts that are not yours
-            className={`${user.id !== post.creator.$id} && hidden`}
+            className={`${user.id !== post.creator.$id && "hidden"}`}
             >
             <img src="/assets/icons/edit.svg" alt="edit" width={20} height={20} />
             </Link>
