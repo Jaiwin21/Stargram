@@ -31,15 +31,28 @@ export const useSignOutAccount = () => {
 }
 
 
+// export const useCreatePost = () => {
+//     const queryClient = useQueryClient();
+    
+//     return useMutation({
+//       mutationFn: (post: INewPost) => createPost(post), // Ensure createPost is a function returning a promise
+//       onSuccess: () => {
+//         queryClient.invalidateQueries({
+//           queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+//         });
+//       },
+//     });
+//   };
+
 export const useCreatePost = () => {
     const queryClient = useQueryClient();
-    
-    return useMutation({
-      mutationFn: (post: INewPost) => createPost(post), // Ensure createPost is a function returning a promise
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
-        });
-      },
-    });
-  };
+
+    return useMutation ({
+        mutationFn: (post: INewPost) => createPost(post),
+        onSuccess: () => {
+            queryClient.invalidateQueries ({
+                queryKey: [QUERY_KEYS.GET_RECENT_POSTS]
+            })
+        }
+    })
+}

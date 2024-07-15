@@ -15,7 +15,7 @@ export type INavLink = {
   
   export interface INewPost {
     caption: string;
-    files: File[];
+    file: File[];
     location: string;
     tags: string;
     userId: string;

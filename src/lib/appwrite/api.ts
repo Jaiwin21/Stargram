@@ -1,5 +1,5 @@
 import { INewUser, IUploadedFile } from "../../types";
-import { ID, Query } from "appwrite";
+import { ID, ImageGravity, Query } from "appwrite";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import { INewPost } from "../../types";
 
@@ -106,55 +106,142 @@ export async function signOutAccount() {
 }
 
 
-
-export const createPost = async (post: INewPost) => {
+export async function createPost(post: INewPost) {
     try {
-      const uploadedFiles = await Promise.all(post.files.map(file => uploadFile(file)));
-  
-      const filesData = uploadedFiles.map(file => ({
-        imageUrl: file.imageUrl,
-        imageId: file.imageId,
-      }));
-  
-      const newPost = {
-        caption: post.caption,
-        location: post.location,
-        tags: post.tags.split(','), 
-        creator: post.userId, 
-        imageUrl: filesData[0]?.imageUrl, 
-        imageId: filesData[0]?.imageId,   
-      };
-  
-      // Create document in the database
-      const createdPost = await databases.createDocument(
-        '6689c1e9000b929ee942', 
-        '6689c24700108fe45a5c', 
-        ID.unique(), 
-        newPost // Pass the constructed new post object
-      );
-  
-      return createdPost; // Return the created post document
+        const uploadedFile = await uploadFile(post.file[0]);
+        if (!uploadedFile) throw new Error("File upload failed");
+
+        const fileUrl = await getFilePreview(uploadedFile.$id);
+        if (!fileUrl) {
+            await deleteFile(uploadedFile.$id);
+            throw new Error("Failed to get file preview URL");
+        }
+
+        const tags = post.tags.replace(/ /g, '').split(',');
+
+        const newPost = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            ID.unique(),
+            {
+                creator: post.creator,
+                caption: post.caption,
+                imageUrl: fileUrl.href, // Ensure fileUrl is a string
+                imageId: uploadedFile.$id,
+                location: post.location,
+                tags: tags,
+            }
+        );
+
+        if (!newPost) {
+            await deleteFile(uploadedFile.$id);
+            throw new Error("Failed to create post");
+        }
+
+        return newPost;
     } catch (error) {
-      console.error('Failed to create post:', error);
-      throw new Error('Failed to create post'); // Throw an error if creation fails
+        console.error("Failed to create post:", error);
+        throw error;
     }
-  };
+}
+
+export async function uploadFile(file: File) {
+    try {
+        const uploadedFile = await storage.createFile(
+            appwriteConfig.storageId,
+            ID.unique(),
+            file
+        );
+        return uploadedFile;
+    } catch (error) {
+        console.error("File upload failed:", error);
+        throw error;
+    }
+}
+
+export async function getFilePreview(fileId: string) {
+    try {
+        const fileUrl = storage.getFilePreview(
+            appwriteConfig.storageId,
+            fileId,
+            2000,
+            2000,
+            'center' as ImageGravity,
+            100
+        );
+        return fileUrl;
+    } catch (error) {
+        console.error("Failed to get file preview:", error);
+        throw error;
+    }
+}
+
+export async function deleteFile(fileId: string) {
+    try {
+        await storage.deleteFile(appwriteConfig.storageId, fileId);
+        return { status: 'Ok' };
+    } catch (error) {
+        console.error("Failed to delete file:", error);
+        throw error;
+    }
+}
+
+
+
+
+
+
+
+
+
+// export const createPost = async (post: INewPost) => {
+//     try {
+//       const uploadedFiles = await Promise.all(post.files.map(file => uploadFile(file)));
+  
+//       const filesData = uploadedFiles.map(file => ({
+//         imageUrl: file.imageUrl,
+//         imageId: file.imageId,
+//       }));
+  
+//       const newPost = {
+//         caption: post.caption,
+//         location: post.location,
+//         tags: post.tags.split(','), 
+//         creator: post.userId, 
+//         imageUrl: filesData[0]?.imageUrl, 
+//         imageId: filesData[0]?.imageId,   
+//       };
+  
+//       // Create document in the database
+//       const createdPost = await databases.createDocument(
+//         '6689c1e9000b929ee942', 
+//         '6689c24700108fe45a5c', 
+//         ID.unique(), 
+//         newPost // Pass the constructed new post object
+//       );
+  
+//       return createdPost; // Return the created post document
+//     } catch (error) {
+//       console.error('Failed to create post:', error);
+//       throw new Error('Failed to create post'); // Throw an error if creation fails
+//     }
+//   };
   
 
-  export async function uploadFile(file: File): Promise<IUploadedFile> {
-    try {
-      // Upload file to Appwrite storage
-      const response = await storage.createFile('6689c186003124c10cf3', ID.unique(), file);
+//   export async function uploadFile(file: File): Promise<IUploadedFile> {
+//     try {
+//       // Upload file to Appwrite storage
+//       const response = await storage.createFile('6689c186003124c10cf3', ID.unique(), file);
   
-      // Construct the imageUrl based on your Appwrite configuration
-      const imageUrl = storage.getFileView('6689c186003124c10cf3', response.$id).href;
+//       // Construct the imageUrl based on your Appwrite configuration
+//       const imageUrl = storage.getFileView('6689c186003124c10cf3', response.$id).href;
   
-      return {
-        imageId: response.$id,
-        imageUrl: imageUrl,
-      };
-    } catch (error) {
-      console.error('Failed to upload file:', error);
-      throw new Error('Failed to upload file');
-    }
-  }
+//       return {
+//         imageId: response.$id,
+//         imageUrl: imageUrl,
+//       };
+//     } catch (error) {
+//       console.error('Failed to upload file:', error);
+//       throw new Error('Failed to upload file');
+//     }
+//   }
