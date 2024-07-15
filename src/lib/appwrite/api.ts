@@ -214,12 +214,50 @@ export async function likePost(postId: string, likesArray: string[]) {
         )
 
         if(!updatedPost) throw Error;
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
+export async function savePost(postId: string, userId: string) {
+    try {
+
+        const updatedPost = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.savesCollectionId,
+            ID.unique(),
+            {
+                user: userId,
+                post: postId,
+            }
+        )
+
+        if(!updatedPost) throw Error;
         
     } catch (error) {
         console.log(error);
     }
 }
 
+
+export async function deleteSavePost(savedRecordId: string) {
+    try {
+
+        const statusCode = await databases.deleteDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.savesCollectionId,
+            savedRecordId,
+        )
+
+        if(!statusCode) throw Error;
+        return { status: "ok" }
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 
 // export const createPost = async (post: INewPost) => {
