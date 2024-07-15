@@ -260,6 +260,19 @@ export async function deleteSavePost(savedRecordId: string) {
 }
 
 
+export async function getPostById(postId: string) {
+    try {
+        const post = await databases.getDocument (
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            postId
+        )
+        return post;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 // export const createPost = async (post: INewPost) => {
 //     try {
 //       const uploadedFiles = await Promise.all(post.files.map(file => uploadFile(file)));
