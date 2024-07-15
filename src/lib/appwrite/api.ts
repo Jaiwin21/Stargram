@@ -106,30 +106,30 @@ export async function signOutAccount() {
 }
 
 
+
 export const createPost = async (post: INewPost) => {
     try {
-      // Upload files to storage and get imageUrl and imageId for each file
       const uploadedFiles = await Promise.all(post.files.map(file => uploadFile(file)));
   
-      // Map uploaded files to the format expected by your database
       const filesData = uploadedFiles.map(file => ({
         imageUrl: file.imageUrl,
         imageId: file.imageId,
       }));
   
-      // Construct the new post object to be stored in the database
       const newPost = {
         caption: post.caption,
         location: post.location,
-        tags: post.tags.split(','), // Convert tags string to array
-        // Add other attributes as needed by your collection schema
+        tags: post.tags.split(','), 
+        creator: post.userId, 
+        imageUrl: filesData[0]?.imageUrl, 
+        imageId: filesData[0]?.imageId,   
       };
   
       // Create document in the database
       const createdPost = await databases.createDocument(
-        '6689c1e9000b929ee942', // Replace with your database ID
-        '6689c24700108fe45a5c', // Replace with your collection ID
-        ID.unique(), // Unique ID, or provide your own
+        '6689c1e9000b929ee942', 
+        '6689c24700108fe45a5c', 
+        ID.unique(), 
         newPost // Pass the constructed new post object
       );
   
