@@ -201,6 +201,13 @@ export async function getRecentPosts() {
 }
 
 
+export async function likePost(postId: string, likesArray: string[]) {
+    try {
+
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 
 
