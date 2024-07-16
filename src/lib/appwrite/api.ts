@@ -1,4 +1,4 @@
-import { INewUser, IUploadedFile } from "../../types";
+import { INewUser, IUpdatePost, IUploadedFile } from "../../types";
 import { ID, ImageGravity, Query } from "appwrite";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import { INewPost } from "../../types";
@@ -272,6 +272,75 @@ export async function getPostById(postId: string) {
         console.log(error);
     }
 }
+
+
+
+export async function updatePost(post: IUpdatePost) {
+    const hasFileToUpdate = post.file.length > 0;
+    try {
+        
+        let image = {
+            imageUrl: post.imageUrl,
+            imageId: post.imageId,
+        }
+
+        if (hasFileToUpdate) {
+            const uploadedFile = await uploadFile(post.file[0]); 
+            if (!uploadedFile) throw new Error("File upload failed");
+
+            const fileUrl = await getFilePreview(uploadedFile.$id);
+            if (!fileUrl) {
+                await deleteFile(uploadedFile.$id);
+                throw new Error("Failed to get file preview URL");
+            }
+
+            image = {...image, imageUrl: fileUrl, imageId: uploadedFile.$id}
+        }
+
+        
+        
+
+
+
+        const tags = post.tags?.replace(/ /g, '').split(',');
+
+        const updatedPost = await databases.updateDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            post.postId,
+            {
+                caption: post.caption,
+                imageUrl: image.imageUrl, // Ensure fileUrl is a string
+                imageId: image.imageId,
+                location: post.location,
+                tags: tags,
+            }
+        );
+
+        if (!updatedPost) {
+            await deleteFile(post.imageId);
+            throw new Error("Failed to create post");
+        }
+
+        return updatedPost;
+    } catch (error) {
+        console.error("Failed to create post:", error);
+        throw error;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // export const createPost = async (post: INewPost) => {
 //     try {
