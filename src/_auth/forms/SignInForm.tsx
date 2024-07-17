@@ -13,7 +13,7 @@ import {
 import { Input } from "../../components/ui/input";
 import { SigninValidation } from "../../lib/validation";
 import { z } from "zod";
-import Loader from "../../components/shared/Loader";
+
 import { useToast } from "../../components/ui/use-toast";
 import { useSignInAccount } from "../../lib/react-query/queriesAndMutations";
 import { useUserContext } from "../../context/AuthContext";
@@ -109,7 +109,7 @@ const SignInForm = () => {
             <Button type="submit" className="shad-button_primary">
               
                 <div className="flex-center gap-2">
-                 <Loader /> Loading...
+                 Sign in
                 </div>
               
             </Button>
