@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom"
 import { useGetPostById } from "../../lib/react-query/queriesAndMutations"
 import Loader from "../../components/shared/Loader";
-import { formatDateString, multiFormatDateString } from "../../lib/utils";
+import { multiFormatDateString } from "../../lib/utils";
 import { useUserContext } from "../../context/AuthContext";
 import { Button } from "../../components/ui/button";
 import PostStats from "../../components/shared/PostStats";

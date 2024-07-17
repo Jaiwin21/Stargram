@@ -1,4 +1,4 @@
-import { INewUser, IUpdatePost, IUploadedFile } from "../../types";
+import { INewUser, IUpdatePost } from "../../types";
 import { ID, ImageGravity, Models, Query } from "appwrite";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import { INewPost } from "../../types";

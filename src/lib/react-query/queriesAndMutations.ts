@@ -9,7 +9,7 @@ import {
 import { createPost, createUserAccount, deletePost, deleteSavePost, getCurrentUser, getInfinitePosts, getPostById, getRecentPosts, likePost, savePost, searchPosts, signInAccount, signOutAccount, updatePost } from '../appwrite/api';
 import { INewPost, INewUser, IUpdatePost } from '../../types';
 import { QUERY_KEYS } from './queryKeys';
-import { CreatePost } from '../../_root/pages';
+
 import { Models } from 'appwrite';
 
 export const useCreateUserAccount = () => {
@@ -160,7 +160,7 @@ export const useDeletePost = () => {
     
     return useMutation ({
         mutationFn: ({ postId, imageId}: { postId: string, imageId: string}) => deletePost(postId, imageId),
-        onSuccess: (data) => {
+        onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: [QUERY_KEYS.GET_RECENT_POSTS]
             })
