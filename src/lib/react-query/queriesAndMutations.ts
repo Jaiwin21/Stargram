@@ -2,12 +2,15 @@ import {
     useQuery,
     useMutation,
     useQueryClient,
-    useInfiniteQuery
+    useInfiniteQuery,
+    QueryFunctionContext,
+    QueryKey
 } from '@tanstack/react-query';
 import { createPost, createUserAccount, deletePost, deleteSavePost, getCurrentUser, getInfinitePosts, getPostById, getRecentPosts, likePost, savePost, searchPosts, signInAccount, signOutAccount, updatePost } from '../appwrite/api';
 import { INewPost, INewUser, IUpdatePost } from '../../types';
 import { QUERY_KEYS } from './queryKeys';
 import { CreatePost } from '../../_root/pages';
+import { Models } from 'appwrite';
 
 export const useCreateUserAccount = () => {
     return useMutation ({
@@ -167,16 +170,22 @@ export const useDeletePost = () => {
 
 
 export const useGetPosts = () => {
-    return useInfiniteQuery({
+    return useInfiniteQuery<Models.DocumentList<Models.Document>, Error>({
         queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-        queryFn: getInfinitePosts,
+        queryFn: async ({ pageParam }: QueryFunctionContext<QueryKey, unknown>) => {
+            // Ensure pageParam is handled as unknown initially and then cast appropriately
+            const cursor = pageParam as string | undefined;
+            return getInfinitePosts({ pageParam: cursor });
+        },
         getNextPageParam: (lastPage) => {
             if (!lastPage || !lastPage.documents || lastPage.documents.length === 0) return null;
-            const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
-            return lastId;
+            const lastDocument = lastPage.documents[lastPage.documents.length - 1];
+            return lastDocument.$id;
         },
+        initialPageParam: undefined,
     });
 };
+
 
 
 export const useSearchPosts = (searchTeam: string) => {
